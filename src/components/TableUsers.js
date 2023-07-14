@@ -15,29 +15,42 @@ const Users = (props) => {
     totalPages: 0
   };
 
-  const [userData, setUserData] = useState(initialState);
-
-  const { listUsers, totalUsers, totalPages } = userData;
-
-  const [isShowAddNew, setisShowAddNew] = useState(false);
-  const [isShowEditUser, setisShowEditUser] = useState(false);
-  const [dataUserEdit, setDataUserEdit] = useState({});
-
-  const [isShowModelDelete, setIsShowModelDelete] = useState(false);
-  const [dataUserDelete, setDataUserDelete] = useState({});
-
-  const [keyWord, setKeyWord] = useState("")
-
-  const handleClose = () => {
-    setisShowAddNew(false)
-    setisShowEditUser(false)
-    setIsShowModelDelete(false)
+  const show = {
+    isShowAddNew: false,
+    isShowEditUser: false,
+    isShowModelDelete: false
   }
 
+  const dataUsers = {
+    dataUserEdit: {},
+    dataUserDelete: {}
+  }
+
+  const [dataUser, setDataUser] = useState(dataUsers);
+  const {dataUserEdit, dataUserDelete} = dataUser;
+
+  const [isShow, setIsShow] = useState(show);
+  const { isShowAddNew, isShowEditUser, isShowModelDelete } = isShow;
+
+  const [userData, setUserData] = useState(initialState);
+  const { listUsers, totalUsers, totalPages } = userData;
+
+
+
+  const handleClose = () => {
+    setIsShow(prev => ({
+      ...prev,
+      isShowAddNew: false,
+      isShowEditUser: false,
+      isShowModelDelete: false
+    }));
+  };
+  
+
   const handleUpdateTable = (user) => {
-    setUserData(prevState => ({
-      ...prevState,
-      listUsers: [user, ...prevState.listUsers]
+    setUserData(prev => ({
+      ...prev,
+      listUsers: [user, ...prev.listUsers]
     }));
   };
   
@@ -57,15 +70,27 @@ const Users = (props) => {
 
 
   const handleEditUser = (user) => {
-    setisShowEditUser(true)
-    setDataUserEdit(user)
+    setIsShow(prev => ({
+      ...prev,
+      isShowEditUser: true,
+    }));
+    setDataUser(prev => ({
+      ...prev,
+      dataUserEdit: user
+    }))
 
 
   }
 
   const handleDeleteUser = (user) => {
-    setIsShowModelDelete(true)
-    setDataUserDelete(user)
+    setIsShow(prev => ({
+      ...prev,
+      isShowModelDelete: true,
+    }));
+    setDataUser(prev => ({
+      ...prev,
+      dataUserDelete: user
+    }))
   }
 
   const handleDeleteUserFrom = (user) => {
@@ -121,7 +146,10 @@ const Users = (props) => {
           <b>List Users: </b>
         </span>
         <button className="btn btn-success"
-          onClick={() => setisShowAddNew(true)}
+          onClick={() =>  setIsShow(prev => ({
+            ...prev,
+            isShowAddNew: true,
+          }))}
         >
           Add edit user</button>
       </div>
