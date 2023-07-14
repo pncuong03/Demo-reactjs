@@ -9,10 +9,15 @@ import _, { debounce } from "lodash";
 
 const Users = (props) => {
 
-  
-  const [listUsers, setListUsers] = useState([]);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const initialState = {
+    listUsers: [],
+    totalUsers: 0,
+    totalPages: 0
+  };
+
+  const [userData, setUserData] = useState(initialState);
+
+  const { listUsers, totalUsers, totalPages } = userData;
 
   const [isShowAddNew, setisShowAddNew] = useState(false);
   const [isShowEditUser, setisShowEditUser] = useState(false);
@@ -30,14 +35,22 @@ const Users = (props) => {
   }
 
   const handleUpdateTable = (user) => {
-    setListUsers([user, ...listUsers])
-  }
+    setUserData(prevState => ({
+      ...prevState,
+      listUsers: [user, ...prevState.listUsers]
+    }));
+  };
+  
+  
 
   const handleUpdateTableEdit = (user) => {
     let cloneListUsers = _.cloneDeep(listUsers);
     let index = listUsers.findIndex(item => item.id === user.id);
     cloneListUsers[index].first_name = user.first_name;
-    setListUsers(cloneListUsers)
+    setUserData(prev => ({
+      ...prev,
+      listUsers: cloneListUsers
+    }))
 
   }
 
@@ -58,7 +71,10 @@ const Users = (props) => {
   const handleDeleteUserFrom = (user) => {
     let cloneListUsers = _.cloneDeep(listUsers);
     cloneListUsers = cloneListUsers.filter(item => item.id !== user.id)
-    setListUsers(cloneListUsers)
+    setUserData(prev => ({
+      ...prev,
+      listUsers: cloneListUsers
+    }))
   }
 
 
@@ -70,9 +86,11 @@ const Users = (props) => {
   const getUsers = async (page) => {
     let res = await fetchAllUser(page);
     if (res && res.data) {
-      setListUsers(res.data)
-      setTotalPages(res.total_pages)
-      setTotalUsers(res.total)
+      setUserData({
+        listUsers: res.data,
+        totalUsers: res.total,
+        totalPages: res.total_pages
+      });
     }
 
   }
@@ -87,7 +105,10 @@ const Users = (props) => {
     if (term) {
       let cloneListUsers = _.cloneDeep(listUsers);
       cloneListUsers = cloneListUsers.filter(item => item.email.includes(term))
-      setListUsers(cloneListUsers)
+      setUserData(prev => ({
+        ...prev,
+        listUsers: cloneListUsers
+      }))
     } else {
       getUsers(1);
     }
