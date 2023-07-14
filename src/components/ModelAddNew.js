@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { postCreateUser } from '../services/UserService';
-import {  toast } from 'react-toastify';
+
+import { handleAdd } from '../services/CreateUser';
+
 
 const ModelAddNew = (props) => {
 
@@ -9,21 +10,22 @@ const ModelAddNew = (props) => {
     const [name, setName] = useState("")
     const [job, setJob] = useState("")
 
-    const handleSaveUser = async () => {
-        let res = await postCreateUser(name, job);
+    const handleAddUser = async () => {
+    
+          let res = await handleAdd(name, job);
       
-         if(res && res.id){
-             handleClose();
-             setName('');
-             setJob('');
-             toast.success("A user is created succeed!");
-             handleUpdateTable({
-                first_name: name, id: res.id
-            });
-         }else {
-             toast.error("An error!");
-         }
-    }
+          handleClose();
+          setName('');
+          setJob('');
+      
+          handleUpdateTable({
+            first_name: name,
+            id: res.id
+          });
+        
+      };
+      
+      
     return (
         <>
 
@@ -56,7 +58,7 @@ const ModelAddNew = (props) => {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSaveUser}>
+                    <Button variant="primary" onClick={handleAddUser}>
                         Save Changes
                     </Button>
                 </Modal.Footer>

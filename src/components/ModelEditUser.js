@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { putUpdateUser } from '../services/UserService';
-import { toast } from 'react-toastify';
+import { handleEdit } from '../services/EditUser';
 
 
 const ModelEditUser = (props) => {
@@ -11,28 +10,19 @@ const ModelEditUser = (props) => {
     const [job, setJob] = useState("")
 
     const handleEditUser = async () => {
-        let res = await putUpdateUser(name, job);
+        await handleEdit(name, job);
 
-        if(res && res.updateAt){
+        handleUpdateTableEdit({
+            first_name: name,
+            id: dataUserEdit.id
+        })
 
-            handleUpdateTableEdit({
-                first_name: name,
-                id: dataUserEdit.id
-            })
-            
-            handleClose();
-            // toast.success("User is edited!")
-           
-        }else {
-            // toast.error("User is not edited!")
-        }
-       
-      
-           
+        handleClose();
+
     }
 
     useEffect(() => {
-        if(show){
+        if (show) {
             setName(dataUserEdit.first_name)
         }
     }, [dataUserEdit])
@@ -46,17 +36,17 @@ const ModelEditUser = (props) => {
                 <Modal.Body>
                     <div className="form-group">
                         <label className="form-label">Name</label>
-                        <input 
-                            type="text" 
-                            className="form-control" 
+                        <input
+                            type="text"
+                            className="form-control"
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                         />
-    
+
                     </div>
                     <div className="form-group">
                         <label className="form-label">Job</label>
-                        <input 
+                        <input
                             type="text"
                             className="form-control"
                             value={job}
